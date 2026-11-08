@@ -30,12 +30,14 @@ import {
   couponsApi,
   payrollApi,
   leavesApi,
+  IS_DEMO_MODE,
 } from './api';
 
 // Components
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Toast from './components/Toast';
+import DemoFloatingBar from './components/DemoFloatingBar';
 
 // Dedicated Auth Modals
 import AdminLoginModal from './components/modals/AdminLoginModal';
@@ -792,12 +794,27 @@ export default function App() {
   // ==========================================
   if (viewMode === 'customer') {
     return (
-      <CustomerPortal
-        onGoHome={() => setViewMode('home')}
-        onLogoutSuccess={handleLogout}
-        initialTab={customerInitialTab}
-        initialService={customerInitialService}
-      />
+      <>
+        <CustomerPortal
+          onGoHome={() => setViewMode('home')}
+          onLogoutSuccess={handleLogout}
+          initialTab={customerInitialTab}
+          initialService={customerInitialService}
+        />
+
+        {IS_DEMO_MODE && (
+          <DemoFloatingBar
+            onSwitchToAdmin={handleAdminLoginSuccess}
+            onSwitchToStaff={handleStaffAuthSuccess}
+            onSwitchToCustomer={handleCustomerAuthSuccess}
+            onGoHome={() => setViewMode('home')}
+            onDataReset={() => {
+              loadAllData();
+              showToast('Demo Reset', 'Mock data restored to default.');
+            }}
+          />
+        )}
+      </>
     );
   }
 
@@ -840,6 +857,19 @@ export default function App() {
           onClose={() => setShowAdminAuthModal(false)}
           onLoginSuccess={handleAdminLoginSuccess}
         />
+
+        {IS_DEMO_MODE && (
+          <DemoFloatingBar
+            onSwitchToAdmin={handleAdminLoginSuccess}
+            onSwitchToStaff={handleStaffAuthSuccess}
+            onSwitchToCustomer={handleCustomerAuthSuccess}
+            onGoHome={() => setViewMode('home')}
+            onDataReset={() => {
+              loadAllData();
+              showToast('Demo Reset', 'Mock data restored to default.');
+            }}
+          />
+        )}
       </>
     );
   }
@@ -1097,6 +1127,19 @@ export default function App() {
         orders={orders}
         onClose={() => setSelectedCustomerDetail(null)}
       />
+
+      {IS_DEMO_MODE && (
+        <DemoFloatingBar
+          onSwitchToAdmin={handleAdminLoginSuccess}
+          onSwitchToStaff={handleStaffAuthSuccess}
+          onSwitchToCustomer={handleCustomerAuthSuccess}
+          onGoHome={() => setViewMode('home')}
+          onDataReset={() => {
+            loadAllData();
+            showToast('Demo Reset', 'Mock data restored to default.');
+          }}
+        />
+      )}
     </div>
   );
 }
